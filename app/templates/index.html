@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Monitor</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #4caf50; /* Green accent */
+            text-align: center;
+        }
+        pre {
+            background-color: #1e1e1e;
+            border: 1px solid #4caf50;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #bb86fc; /* Light blue/purple accent */
+            line-height: 1.5;
+        }
+        .log-entry {
+            margin-bottom: 10px;
+        }
+        .log-entry.suspicious {
+            color: #ff5252; /* Red for suspicious logs */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monitored Logs</h1>
+    <pre>
+        {% for log in logs %}
+            <div class="log-entry {% if 'Failed password' in log or 'Invalid user' in log %}suspicious{% endif %}">
+                {{ log }}
+            </div>
+        {% endfor %}
+    </pre>
+</body>
+</html>
