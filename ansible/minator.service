@@ -1,0 +1,12 @@
+[Unit]
+Description=Minator Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/minator_app/log_monitor.py
+WorkingDirectory=/opt/minator_app
+Restart=always
+User=osman
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,60 @@
+---
+- name: Deploy Python App
+  hosts: app_servers
+  become: yes
+  vars:
+    app_dir: /opt/minator_app
+    app_user: osman
+    app_port: 5000
+
+  tasks:
+    - name: Install required system packages
+      apt:
+        name:
+          - python3-pip
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Create application directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Copy application files
+      copy:
+        src: ../app/
+        dest: "{{ app_dir }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0644'
+        directory_mode: '0755'
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ app_dir }}/requirements.txt"
+        executable: pip3
+
+    - name: Copy systemd service file
+      copy:
+        src: minator.service
+        dest: /etc/systemd/system/minator.service
+        mode: '0644'
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Minator service
+      systemd:
+        name: minator
+        enabled: yes
+        state: started
+
+    - name: Open port for Flask app
+      ufw:
+        rule: allow
+        port: "{{ app_port }}"
+        proto: tcp
